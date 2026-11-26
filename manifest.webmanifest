@@ -1,17 +1,16 @@
 {
   "name": "Busca Promo",
   "short_name": "Busca Promo",
-  "description": "Pesquise produtos em várias lojas e acompanhe seus preços.",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#f4f7fb",
   "theme_color": "#155eef",
   "icons": [
     {
       "src": "icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }

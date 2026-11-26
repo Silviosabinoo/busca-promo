@@ -1,30 +1,27 @@
-BUSCA PROMO — VERSÃO 1.0
+BUSCA PROMO 2.0 — COMPARAÇÃO SIMPLIFICADA
 
-O QUE JÁ FUNCIONA
-- Pesquisa de um produto em várias lojas selecionadas.
-- Abre páginas de busca das lojas em novas abas.
-- Permite filtrar a pesquisa com um texto de preço máximo (a loja pode ou não aplicar esse termo).
-- Salva lista de produtos e preço desejado no armazenamento local do navegador.
-- Solicita permissão de notificações e envia um lembrete local quando autorizado.
-- Pode ser instalado como PWA e possui cache básico para abrir a interface offline.
+COMO ATUALIZAR
+1. Faça backup do repositório atual, se desejar.
+2. Extraia este ZIP no computador.
+3. Envie os arquivos que estão dentro da pasta para a raiz do repositório GitHub.
+4. Confirme a substituição dos arquivos existentes e faça Commit changes.
+5. Aguarde o GitHub Pages atualizar. Se o navegador mostrar a versão antiga, faça uma atualização forçada (Ctrl+F5) ou limpe os dados/cache do site.
 
-IMPORTANTE — LIMITAÇÕES DESTA VERSÃO
-- Não coleta nem compara preços automaticamente dentro do app.
-- Não detecta quedas reais de preço e não envia alertas de promoção confirmada.
-- Cada marketplace controla sua página, resultados, disponibilidade e frete.
-- Notificações do navegador dependem de suporte e permissão. O lembrete é exibido quando o usuário ativa notificações, não é um monitoramento contínuo.
-- Dados da lista ficam no dispositivo e não sincronizam entre celular e computador.
+O QUE ESTA VERSÃO FAZ
+- Prepara pesquisas do mesmo produto em várias lojas.
+- Permite selecionar as lojas que deseja consultar.
+- Abre links individuais para você comparar os resultados.
+- Mantém uma lista de desejos local no navegador.
+- Solicita permissão para notificações locais.
+- Funciona como PWA instalável quando hospedada por HTTPS.
 
-COMO PUBLICAR SEM SERVIDOR PRÓPRIO
-1. Extraia o ZIP.
-2. Crie um repositório público no GitHub.
-3. Envie todos os arquivos para a raiz do repositório.
-4. No GitHub, abra Settings > Pages.
-5. Em Build and deployment, selecione Deploy from a branch; escolha a branch main e a pasta /(root); salve.
-6. Aguarde a publicação e abra o endereço HTTPS gerado.
-7. No celular, abra o endereço no navegador e escolha “Adicionar à tela inicial” ou “Instalar app”.
+LIMITAÇÕES IMPORTANTES
+- Não consulta nem coleta preços automaticamente.
+- Não garante que o preço máximo seja aplicado como filtro pela loja; ele é incluído no texto da pesquisa.
+- Não detecta descontos reais nem monitora preços em segundo plano.
+- As lojas podem mudar seus endereços e formatos de pesquisa.
+- Alguns sites podem exigir login, bloquear links ou abrir em uma nova aba.
+- A lista de desejos fica armazenada no navegador/dispositivo e não sincroniza entre aparelhos.
+- Não insira senhas, tokens ou chaves secretas nos arquivos públicos.
 
-Para PWA e notificações, use o endereço HTTPS publicado. Abrir index.html diretamente pelo computador permite testar a interface, mas não habilita instalação nem service worker.
-
-PRÓXIMA ETAPA PARA ALERTAS REAIS
-Precisaremos conectar fontes de dados de preços autorizadas (APIs oficiais, programas de afiliados ou provedores de comparação). Algumas exigem cadastro, aprovação e chaves de API. Não coloque chaves secretas em arquivos JavaScript públicos. Para proteger credenciais, pode ser necessário um serviço serverless gerenciado, mesmo sem manter servidor próprio.
+Para comparar, confira se os resultados são do mesmo modelo e considere frete, vendedor, prazo e condições de pagamento.

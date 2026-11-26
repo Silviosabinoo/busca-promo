@@ -4,76 +4,79 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#155eef">
-  <meta name="description" content="Encontre produtos, compare lojas e acompanhe preços com o Busca Promo.">
+  <meta name="description" content="Busque produtos em várias lojas e compare os preços.">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <title>Busca Promo</title>
 </head>
 <body>
-<header class="topbar">
-  <a class="brand" href="#" aria-label="Busca Promo início"><span class="brand-icon">％</span><span>Busca<span class="brand-accent">Promo</span></span></a>
-  <nav><a href="#buscar">Buscar ofertas</a><a href="#acompanhar">Meus produtos</a></nav>
-  <button class="install-btn" id="installBtn" hidden>Instalar app</button>
+<header class="top">
+  <div class="wrap head">
+    <div class="brand"><span class="logo">BP</span><div><h1>Busca Promo</h1><p>Pesquise. Compare. Economize.</p></div></div>
+    <span class="version">Versão 2.0</span>
+  </div>
 </header>
-
-<main>
-  <section class="hero">
-    <div class="hero-copy">
-      <span class="eyebrow">COMPRE MELHOR, PAGUE MENOS</span>
-      <h1>Encontre o produto.<br><span>Compare as lojas.</span></h1>
-      <p>Pesquise em vários marketplaces, salve o que deseja e acompanhe seus preços em um só lugar.</p>
-      <a class="primary-link" href="#buscar">Começar pesquisa <span>→</span></a>
-      <div class="trust"><span>✓ Sem cadastro</span><span>✓ Seus dados ficam no aparelho</span></div>
-    </div>
-    <div class="hero-art" aria-hidden="true">
-      <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
-      <div class="deal-card"><span class="deal-tag">OFERTA</span><div class="deal-box">％</div><strong>Seu próximo<br>achado está aqui</strong><small>Pesquise em várias lojas</small></div>
-      <div class="float-bubble bubble-a">↓ preço</div><div class="float-bubble bubble-b">★ favorito</div>
-    </div>
+<main class="wrap">
+  <section class="intro">
+    <h2>Compare ofertas em várias lojas</h2>
+    <p>Faça uma pesquisa única e abra os resultados das lojas escolhidas para comparar os preços.</p>
   </section>
 
-  <section class="search-section" id="buscar">
-    <div class="section-heading"><div><span class="eyebrow">PESQUISA MULTILOJAS</span><h2>O que você está procurando?</h2></div><span class="muted">A busca abre os resultados nas lojas escolhidas.</span></div>
-    <form id="searchForm" class="search-panel">
-      <label class="search-field"><span>Produto</span><input id="productQuery" required placeholder="Ex.: fone bluetooth, geladeira, tênis..." autocomplete="off"></label>
-      <label class="search-field price-field"><span>Preço máximo (opcional)</span><div class="price-input"><b>R$</b><input id="maxPrice" type="number" min="0" step="0.01" placeholder="500,00"></div></label>
-      <button class="search-button" type="submit"><span>⌕</span> Buscar ofertas</button>
+  <section class="panel">
+    <h2>1. O que você procura?</h2>
+    <form id="searchForm">
+      <label for="product">Nome do produto</label>
+      <input id="product" type="search" placeholder="Ex.: Smart TV Samsung 50 polegadas" required>
+      <div class="row">
+        <div class="grow">
+          <label for="maxPrice">Preço máximo desejado (opcional)</label>
+          <input id="maxPrice" type="number" min="0" step="0.01" placeholder="Ex.: 1800">
+        </div>
+        <div class="grow">
+          <label for="sortHint">Tipo de pesquisa</label>
+          <select id="sortHint">
+            <option value="">Resultados gerais</option>
+            <option value="menor preço">Priorizar menor preço</option>
+            <option value="promoção desconto">Priorizar promoções</option>
+          </select>
+        </div>
+      </div>
+      <h3>2. Escolha as lojas</h3>
+      <div class="store-grid" id="storeChoices"></div>
+      <div class="actions">
+        <button type="button" class="btn secondary" id="selectAll">Selecionar todas</button>
+        <button type="submit" class="btn primary">Pesquisar nas lojas selecionadas</button>
+      </div>
     </form>
-    <div class="store-select">
-      <div class="store-select-title"><strong>Pesquisar em</strong><button type="button" class="text-button" id="toggleStores">Selecionar todas</button></div>
-      <div class="store-grid" id="storeGrid"></div>
-      <p class="hint">Dica: os resultados e preços são fornecidos pelas próprias lojas. Confira frete, vendedor e condições antes de comprar.</p>
-    </div>
-    <div id="searchFeedback" class="feedback" role="status" aria-live="polite"></div>
+    <p class="note">O Busca Promo abre as páginas de pesquisa das lojas. Os preços e a disponibilidade são informados pelas próprias lojas; confira frete, vendedor e condições antes de comprar.</p>
   </section>
 
-  <section class="watch-section" id="acompanhar">
-    <div class="section-heading"><div><span class="eyebrow">SUA LISTA</span><h2>Produtos que você acompanha</h2></div><span class="muted">Salvos somente neste dispositivo</span></div>
+  <section class="panel" id="resultsPanel" hidden>
+    <h2>Resultados para comparação</h2>
+    <p id="resultSummary"></p>
+    <div id="resultLinks" class="result-list"></div>
+    <p class="note">Dica: compare o mesmo modelo, capacidade, tamanho, cor e condições de entrega. O menor preço anunciado nem sempre é o menor preço final.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Lista de desejos</h2>
+    <p class="muted">Guarde produtos e o preço que gostaria de pagar.</p>
     <form id="watchForm" class="watch-form">
-      <label><span>Produto desejado</span><input id="watchName" required placeholder="Ex.: Smart TV 50 polegadas"></label>
-      <label><span>Quero pagar até</span><div class="price-input"><b>R$</b><input id="watchPrice" type="number" min="0" step="0.01" required placeholder="1.800"></div></label>
-      <button type="submit" class="dark-button">＋ Adicionar à lista</button>
+      <div class="grow"><label for="watchName">Produto</label><input id="watchName" required placeholder="Ex.: Fone Bluetooth"></div>
+      <div class="price-field"><label for="watchPrice">Preço desejado (R$)</label><input id="watchPrice" type="number" min="0" step="0.01" required placeholder="250"></div>
+      <button class="btn primary" type="submit">Adicionar</button>
     </form>
     <div id="watchList" class="watch-list"></div>
-    <div class="notification-box">
-      <div class="notification-icon">♧</div>
-      <div><strong>Lembretes de acompanhamento</strong><p>Ative as notificações para receber um lembrete quando abrir o app e tiver produtos salvos. Alertas de queda real de preço dependem da integração com fontes de preços.</p></div>
-      <button id="notifyBtn" class="outline-button">Ativar notificações</button>
-    </div>
   </section>
 
-  <section class="how-section">
-    <span class="eyebrow">SIMPLES ASSIM</span><h2>Como funciona</h2>
-    <div class="steps">
-      <article><span>01</span><h3>Pesquise</h3><p>Digite o produto e escolha as lojas que deseja consultar.</p></article>
-      <article><span>02</span><h3>Compare</h3><p>Veja os resultados nas lojas e confira preço, frete e vendedor.</p></article>
-      <article><span>03</span><h3>Acompanhe</h3><p>Salve produtos e defina o valor máximo que pretende pagar.</p></article>
-    </div>
+  <section class="panel reminder">
+    <div><h2>Notificações e lembretes</h2><p class="muted">Permita notificações para receber lembretes locais do Busca Promo.</p></div>
+    <button id="notifyBtn" class="btn secondary" type="button">Ativar notificações</button>
+    <p class="note full">Esta versão não monitora preços em segundo plano nem detecta quedas automaticamente. Os lembretes são locais e dependem do navegador e das permissões do dispositivo.</p>
   </section>
+  <footer>Busca Promo · Comparação simplificada, sem APIs de preços.</footer>
 </main>
-<footer><a class="brand" href="#"><span class="brand-icon">％</span><span>Busca<span class="brand-accent">Promo</span></span></a><p>Busca Promo · Versão 1.0 · Pesquisa independente; não representa as lojas.</p></footer>
-<div id="toast" class="toast" role="status"></div>
 <script src="app.js"></script>
 </body>
 </html>
