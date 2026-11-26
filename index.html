@@ -14,7 +14,7 @@
 <header class="top">
   <div class="wrap head">
     <div class="brand"><span class="logo">BP</span><div><h1>Busca Promo</h1><p>Pesquise. Compare. Economize.</p></div></div>
-    <span class="version">Versão 2.0</span>
+    <span class="version">Versão 2.1</span>
   </div>
 </header>
 <main class="wrap">
@@ -57,6 +57,27 @@
     <p id="resultSummary"></p>
     <div id="resultLinks" class="result-list"></div>
     <p class="note">Dica: compare o mesmo modelo, capacidade, tamanho, cor e condições de entrega. O menor preço anunciado nem sempre é o menor preço final.</p>
+  </section>
+
+  <section class="panel" id="comparePanel">
+    <h2>Comparador manual de preços</h2>
+    <p class="muted">Registre os preços encontrados nas lojas. O Busca Promo soma produto + frete e destaca o menor total.</p>
+    <form id="compareForm" class="compare-form">
+      <div class="grow"><label for="compareProduct">Produto</label><input id="compareProduct" required placeholder="Ex.: Smart TV Samsung 50 polegadas"></div>
+      <div class="grow"><label for="compareStore">Loja</label><input id="compareStore" required placeholder="Ex.: Amazon"></div>
+      <div class="price-field"><label for="comparePrice">Preço (R$)</label><input id="comparePrice" type="number" min="0.01" step="0.01" required placeholder="1990"></div>
+      <div class="price-field"><label for="compareShipping">Frete (R$)</label><input id="compareShipping" type="number" min="0" step="0.01" value="0" required></div>
+      <button class="btn primary" type="submit">Adicionar preço</button>
+    </form>
+    <div class="table-wrap">
+      <table class="compare-table">
+        <thead><tr><th>Produto</th><th>Loja</th><th>Preço</th><th>Frete</th><th>Total</th><th>Ação</th></tr></thead>
+        <tbody id="compareRows"></tbody>
+      </table>
+    </div>
+    <div id="compareSummary" class="compare-summary" aria-live="polite">Nenhum preço registrado ainda.</div>
+    <div class="actions"><button type="button" id="clearCompare" class="btn secondary">Limpar comparação</button></div>
+    <p class="note">Os valores são inseridos manualmente. Confira se os produtos são exatamente iguais e se o frete e as condições de pagamento correspondem à sua região.</p>
   </section>
 
   <section class="panel">
