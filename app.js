@@ -18,6 +18,57 @@ stores.forEach((s,i)=>{
 });
 $("selectAll").addEventListener("click",()=>choices.querySelectorAll("input").forEach(c=>c.checked=true));
 
+
+async function searchMercadoLivre(product) {
+  const status = $("mlStatus");
+  const root = $("mlResults");
+  root.replaceChildren();
+  status.className = "note";
+  status.textContent = "Consultando anúncios do Mercado Livre...";
+  const endpoint = `https://api.mercadolibre.com/sites/MLB/search?q=${encodeURIComponent(product)}&sort=price_asc&limit=20`;
+  try {
+    const response = await fetch(endpoint, { headers: { "Accept": "application/json" } });
+    if (!response.ok) throw new Error(`A API respondeu com status ${response.status}.`);
+    const data = await response.json();
+    const results = Array.isArray(data.results) ? data.results : [];
+    if (!results.length) {
+      status.textContent = "A busca foi concluída, mas não retornou anúncios para esse termo.";
+      return;
+    }
+    results.forEach(item => {
+      const card = document.createElement("article");
+      card.className = "ml-result";
+      if (item.thumbnail) {
+        const img = document.createElement("img");
+        img.src = item.thumbnail.replace(/^http:/, "https:");
+        img.alt = "";
+        img.loading = "lazy";
+        card.append(img);
+      }
+      const info = document.createElement("div");
+      info.className = "ml-info";
+      const title = document.createElement("a");
+      title.href = item.permalink;
+      title.target = "_blank";
+      title.rel = "noopener noreferrer";
+      title.textContent = item.title || "Anúncio do Mercado Livre";
+      const price = document.createElement("strong");
+      price.textContent = Number(item.price).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+      const details = document.createElement("small");
+      const shipping = item.shipping && item.shipping.free_shipping ? "Frete grátis informado" : "Frete a consultar";
+      const seller = item.seller && item.seller.nickname ? `Vendedor: ${item.seller.nickname}` : "Vendedor no anúncio";
+      details.textContent = `${seller} · ${shipping}`;
+      info.append(title, price, details);
+      card.append(info);
+      root.append(card);
+    });
+    status.textContent = `Encontrados ${results.length} anúncios. Ordenados pelo preço anunciado, do menor para o maior. O frete pode alterar a ordem do custo final.`;
+  } catch (error) {
+    status.className = "note error";
+    status.textContent = "Não foi possível consultar a API diretamente pelo navegador. Isso pode ocorrer por exigência de autenticação, bloqueio de acesso ou CORS. Os links de pesquisa das lojas continuam disponíveis. Detalhe: " + error.message;
+  }
+}
+
 $("searchForm").addEventListener("submit",e=>{
   e.preventDefault();
   const product=$("product").value.trim();
@@ -33,7 +84,8 @@ $("searchForm").addEventListener("submit",e=>{
     const hint=document.createElement("small");hint.textContent="Abrir pesquisa ↗";
     a.append(name,hint);list.append(a);
   });
-  $("resultSummary").textContent=`Pesquisas preparadas para “${product}”. Clique nos links abaixo para abrir cada loja.`;
+  $("resultSummary").textContent=`Pesquisas preparadas para “${product}”. A busca automática no Mercado Livre será tentada abaixo.`;
+  searchMercadoLivre(product);
   $("resultsPanel").hidden=false;
   $("resultsPanel").scrollIntoView({behavior:"smooth",block:"start"});
 });

@@ -1,27 +1,21 @@
-BUSCA PROMO 2.0 — COMPARAÇÃO SIMPLIFICADA
+BUSCA PROMO 2.2 — TESTE DE BUSCA AUTOMÁTICA NO MERCADO LIVRE
 
-COMO ATUALIZAR
-1. Faça backup do repositório atual, se desejar.
-2. Extraia este ZIP no computador.
+ATUALIZAÇÃO
+1. Faça uma cópia de segurança do repositório atual.
+2. Extraia este ZIP.
 3. Envie os arquivos que estão dentro da pasta para a raiz do repositório GitHub.
-4. Confirme a substituição dos arquivos existentes e faça Commit changes.
-5. Aguarde o GitHub Pages atualizar. Se o navegador mostrar a versão antiga, faça uma atualização forçada (Ctrl+F5) ou limpe os dados/cache do site.
+4. Substitua os arquivos existentes e confirme o Commit changes.
+5. Aguarde o GitHub Pages atualizar e abra o site com Ctrl+F5.
 
-O QUE ESTA VERSÃO FAZ
-- Prepara pesquisas do mesmo produto em várias lojas.
-- Permite selecionar as lojas que deseja consultar.
-- Abre links individuais para você comparar os resultados.
-- Mantém uma lista de desejos local no navegador.
-- Solicita permissão para notificações locais.
-- Funciona como PWA instalável quando hospedada por HTTPS.
+NOVIDADE
+- Ao pesquisar um produto, o site tenta consultar a API de busca do Mercado Livre (site MLB).
+- Os anúncios recebidos são exibidos em ordem crescente pelo preço anunciado.
+- Cada anúncio tem link para abrir a página do Mercado Livre.
+- A comparação manual, lista de desejos e links para as outras lojas continuam no site.
 
 LIMITAÇÕES IMPORTANTES
-- Não consulta nem coleta preços automaticamente.
-- Não garante que o preço máximo seja aplicado como filtro pela loja; ele é incluído no texto da pesquisa.
-- Não detecta descontos reais nem monitora preços em segundo plano.
-- As lojas podem mudar seus endereços e formatos de pesquisa.
-- Alguns sites podem exigir login, bloquear links ou abrir em uma nova aba.
-- A lista de desejos fica armazenada no navegador/dispositivo e não sincroniza entre aparelhos.
-- Não insira senhas, tokens ou chaves secretas nos arquivos públicos.
-
-Para comparar, confira se os resultados são do mesmo modelo e considere frete, vendedor, prazo e condições de pagamento.
+- Esta é uma integração experimental diretamente no navegador, sem servidor.
+- O Mercado Livre pode exigir autenticação, limitar ou bloquear chamadas do navegador (CORS). Se isso acontecer, o site mostrará uma mensagem e os links normais continuarão disponíveis.
+- A ordenação usa o preço anunciado, não o custo final. O frete pode não estar disponível na resposta da busca e deve ser conferido no anúncio.
+- Os resultados são anúncios, não confirmação de estoque/preço final.
+- Não adicionamos tokens, senhas ou chaves secretas ao código público.

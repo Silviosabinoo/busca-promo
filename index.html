@@ -14,7 +14,7 @@
 <header class="top">
   <div class="wrap head">
     <div class="brand"><span class="logo">BP</span><div><h1>Busca Promo</h1><p>Pesquise. Compare. Economize.</p></div></div>
-    <span class="version">Versão 2.1</span>
+    <span class="version">Versão 2.2</span>
   </div>
 </header>
 <main class="wrap">
@@ -55,6 +55,12 @@
   <section class="panel" id="resultsPanel" hidden>
     <h2>Resultados para comparação</h2>
     <p id="resultSummary"></p>
+    <section class="ml-results" aria-live="polite">
+      <h3>Busca automática no Mercado Livre</h3>
+      <p id="mlStatus" class="note">Ao pesquisar, o Busca Promo tentará consultar anúncios do Mercado Livre e ordenar pelo menor preço.</p>
+      <div id="mlResults" class="ml-result-list"></div>
+    </section>
+    <h3>Pesquisar também em outras lojas</h3>
     <div id="resultLinks" class="result-list"></div>
     <p class="note">Dica: compare o mesmo modelo, capacidade, tamanho, cor e condições de entrega. O menor preço anunciado nem sempre é o menor preço final.</p>
   </section>
@@ -99,7 +105,7 @@
   </section>
   <footer>Busca Promo · Comparação simplificada, sem APIs de preços.</footer>
 </main>
-<script src="app.js?v=211"></script>
-<script src="compare.js?v=211"></script>
+<script src="app.js?v=220"></script>
+<script src="compare.js?v=220"></script>
 </body>
 </html>

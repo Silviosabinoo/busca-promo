@@ -1,4 +1,4 @@
-const CACHE = "busca-promo-v211-cache";
+const CACHE = "busca-promo-v220-cache";
 const FILES = ["./", "./index.html", "./styles.css", "./app.js", "./compare.js", "./manifest.webmanifest", "./icon.svg"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting()));
