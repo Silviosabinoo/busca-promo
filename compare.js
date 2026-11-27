@@ -1,11 +1,69 @@
+from pathlib import Path
 
+code = r'''(() => {
+  "use strict";
+
+  const $ = id => document.getElementById(id);
+  const KEY = "buscapromo_compare_v211";
+
+  const form = $("compareForm");
+  const tbody = $("compareRows");
+  const summary = $("compareSummary");
+  const clear = $("clearCompare");
+
+  if (!form || !tbody || !summary) {
+    console.error(
+      "Busca Promo: não encontrei compareForm, compareRows ou compareSummary no HTML."
+    );
+    return;
+  }
+
+  let status = $("compareStatus");
+
+  if (!status) {
+    status = document.createElement("p");
+    status.id = "compareStatus";
+    summary.insertAdjacentElement("afterend", status);
+  }
+
+  function createSection(id, headingText, afterElement) {
+    let section = $(id);
+
+    if (!section) {
+      section = document.createElement("section");
+      section.id = id;
+      section.className = "compare-extra-section";
+      afterElement.insertAdjacentElement("afterend", section);
+    }
+
+    section.replaceChildren();
+    const heading = document.createElement("h3");
+    heading.textContent = headingText;
+    section.append(heading);
+    return section;
+  }
+
+  const history = createSection(
+    "compareHistory",
+    "Histórico de preços",
+    status
+  );
+
+  const chartArea = createSection(
+    "comparePriceChart",
+    "Gráfico de evolução dos preços",
+    history
+  );
 
   function readItems() {
     try {
       const value = JSON.parse(localStorage.getItem(KEY) || "[]");
       return Array.isArray(value) ? value : [];
     } catch (error) {
-      showStatus("Não foi possível ler os preços salvos neste navegador.", true);
+      showStatus(
+        "Não foi possível ler os preços salvos neste navegador.",
+        true
+      );
       return [];
     }
   }
@@ -18,7 +76,6 @@
   }
 
   function showStatus(message, isError = false) {
-    if (!status) return;
     status.textContent = message;
     status.classList.toggle("error", isError);
     status.classList.toggle("success", !isError);
@@ -30,7 +87,10 @@
       render();
       return true;
     } catch (error) {
-      showStatus("O navegador bloqueou o armazenamento. Verifique as permissões ou o espaço disponível.", true);
+      showStatus(
+        "O navegador bloqueou o armazenamento. Verifique as permissões ou o espaço disponível.",
+        true
+      );
       return false;
     }
   }
@@ -71,16 +131,17 @@
       details.className = "history-product";
 
       const title = document.createElement("summary");
-      title.textContent = `${group.name} — ${group.records.length} registro(s)`;
+      title.textContent =
+        `${group.name} — ${group.records.length} registro(s)`;
       details.append(title);
 
       const list = document.createElement("ul");
 
-      group.records.sort((a, b) =>
+      const orderedRecords = [...group.records].sort((a, b) =>
         new Date(b.recordedAt || 0) - new Date(a.recordedAt || 0)
       );
 
-      group.records.forEach(item => {
+      orderedRecords.forEach(item => {
         const li = document.createElement("li");
         const total = Number(item.price) + Number(item.shipping || 0);
 
@@ -88,7 +149,6 @@
 
         if (item.recordedAt) {
           const date = new Date(item.recordedAt);
-
           if (!Number.isNaN(date.getTime())) {
             dateText = date.toLocaleString("pt-BR");
           }
@@ -116,13 +176,15 @@
     const groups = getGroups(items);
     const validGroups = [...groups.entries()].filter(([, group]) =>
       group.records.some(item =>
-        item.recordedAt && !Number.isNaN(new Date(item.recordedAt).getTime())
+        item.recordedAt &&
+        !Number.isNaN(new Date(item.recordedAt).getTime())
       )
     );
 
     if (!validGroups.length) {
       const message = document.createElement("p");
-      message.textContent = "Registre preços com data para visualizar o gráfico.";
+      message.textContent =
+        "Registre preços com data para visualizar o gráfico.";
       chartArea.append(message);
       return;
     }
@@ -153,6 +215,7 @@
       graph.replaceChildren();
 
       const group = groups.get(select.value);
+      if (!group) return;
 
       const records = group.records
         .filter(item =>
@@ -226,7 +289,6 @@
         svg.append(line);
       }
 
-      // Linhas de referência e valores do eixo vertical
       for (let i = 0; i <= 4; i++) {
         const value = min + ((max - min) * i / 4);
         const position = y(value);
@@ -246,22 +308,18 @@
       addLine(left, top, left, height - bottom);
       addLine(left, height - bottom, width - right, height - bottom);
 
-      // Linha que conecta os preços
       if (records.length > 1) {
         const polyline = document.createElementNS(svgNS, "polyline");
-
         polyline.setAttribute(
           "points",
           records.map((record, index) =>
             `${x(index)},${y(record.total)}`
           ).join(" ")
         );
-
         polyline.setAttribute("fill", "none");
         polyline.setAttribute("stroke", "#16834a");
         polyline.setAttribute("stroke-width", "3");
         polyline.setAttribute("stroke-linejoin", "round");
-
         svg.append(polyline);
       }
 
@@ -286,7 +344,8 @@
         dateLabel.setAttribute("text-anchor", "middle");
         dateLabel.setAttribute("font-size", "10");
         dateLabel.setAttribute("fill", "currentColor");
-        dateLabel.textContent = record.date.toLocaleDateString("pt-BR");
+        dateLabel.textContent =
+          record.date.toLocaleDateString("pt-BR");
         svg.append(dateLabel);
       });
 
@@ -294,7 +353,6 @@
 
       const first = records[0];
       const last = records[records.length - 1];
-
       const result = document.createElement("p");
 
       if (records.length > 1) {
@@ -307,7 +365,7 @@
 
         result.textContent =
           `${direction} ${money(Math.abs(difference))} ` +
-          `entre o primeiro e o último registro.`;
+          "entre o primeiro e o último registro.";
       } else {
         result.textContent = `Preço registrado: ${money(last.total)}.`;
       }
@@ -344,7 +402,9 @@
     items.forEach(item => {
       const tr = document.createElement("tr");
 
-      if (item.total === best) tr.className = "best-price";
+      if (item.total === best) {
+        tr.className = "best-price";
+      }
 
       [
         item.product,
@@ -352,11 +412,11 @@
         money(item.price),
         money(item.shipping || 0),
         money(item.total)
-      ].forEach((value, i) => {
+      ].forEach((value, index) => {
         const td = document.createElement("td");
         td.textContent = value;
 
-        if (i === 4 && item.total === best) {
+        if (index === 4 && item.total === best) {
           const tag = document.createElement("span");
           tag.className = "best-tag";
           tag.textContent = "Menor total";
@@ -389,80 +449,92 @@
 
     summary.className = "compare-summary";
     summary.textContent =
-      `Menor preço total: ${money(best)} — ${items[0].store} (${items[0].product}).`;
+      `Menor preço total: ${money(best)} — ` +
+      `${items[0].store} (${items[0].product}).`;
   }
 
   form.addEventListener("submit", event => {
-    
-  event.preventDefault();
+    event.preventDefault();
 
-  const product = $("compareProduct").value.trim();
-  const store = $("compareStore").value.trim();
-  const price = Number($("comparePrice").value);
-  const shipping = Number($("compareShipping").value);
+    const product = $("compareProduct").value.trim();
+    const store = $("compareStore").value.trim();
+    const price = Number($("comparePrice").value);
+    const shipping = Number($("compareShipping").value);
 
-  if (
-    !product ||
-    !store ||
-    !Number.isFinite(price) ||
-    price <= 0 ||
-    !Number.isFinite(shipping) ||
-    shipping < 0
-  ) {
-    showStatus("Preencha produto, loja, preço maior que zero e frete válido.", true);
-    return;
-  }
-
-  const items = readItems();
-  const productKey = product.trim().toLocaleLowerCase("pt-BR");
-
-  const previous = items.filter(item =>
-    String(item.product || "").trim().toLocaleLowerCase("pt-BR") === productKey
-  ).at(-1);
-
-  const newTotal = price + shipping;
-  let alertMessage = "Preço adicionado e salvo no histórico!";
-
-  if (previous) {
-    const previousTotal =
-      Number(previous.price) + Number(previous.shipping || 0);
-
-    if (newTotal < previousTotal) {
-      const savings = previousTotal - newTotal;
-
-      alertMessage =
-        `Queda de preço! ${product} ficou ${money(savings)} mais barato. ` +
-        `Antes: ${money(previousTotal)}. Agora: ${money(newTotal)}.`;
-    } else if (newTotal > previousTotal) {
-      alertMessage =
-        `Atenção: o preço de ${product} aumentou ${money(newTotal - previousTotal)}.`;
-    } else {
-      alertMessage = `O preço de ${product} permaneceu igual.`;
+    if (
+      !product ||
+      !store ||
+      !Number.isFinite(price) ||
+      price <= 0 ||
+      !Number.isFinite(shipping) ||
+      shipping < 0
+    ) {
+      showStatus(
+        "Preencha produto, loja, preço maior que zero e frete válido.",
+        true
+      );
+      return;
     }
-  }
 
-  items.push({
-    product,
-    store,
-    price,
-    shipping,
-    recordedAt: new Date().toISOString()
+    const items = readItems();
+    const productKey = product.trim().toLocaleLowerCase("pt-BR");
+
+    let previous = null;
+
+    for (let i = items.length - 1; i >= 0; i--) {
+      const savedProduct = String(items[i].product || "")
+        .trim()
+        .toLocaleLowerCase("pt-BR");
+
+      if (savedProduct === productKey) {
+        previous = items[i];
+        break;
+      }
+    }
+
+    const newTotal = price + shipping;
+    let alertMessage = "Preço adicionado e salvo no histórico!";
+
+    if (previous) {
+      const previousTotal =
+        Number(previous.price) + Number(previous.shipping || 0);
+
+      if (newTotal < previousTotal) {
+        const savings = previousTotal - newTotal;
+        alertMessage =
+          `Queda de preço! ${product} ficou ${money(savings)} mais barato. ` +
+          `Antes: ${money(previousTotal)}. Agora: ${money(newTotal)}.`;
+      } else if (newTotal > previousTotal) {
+        alertMessage =
+          `Atenção: o preço de ${product} aumentou ` +
+          `${money(newTotal - previousTotal)}.`;
+      } else {
+        alertMessage = `O preço de ${product} permaneceu igual.`;
+      }
+    }
+
+    items.push({
+      product,
+      store,
+      price,
+      shipping,
+      recordedAt: new Date().toISOString()
+    });
+
+    if (saveItems(items)) {
+      form.reset();
+      $("compareShipping").value = "0";
+      showStatus(alertMessage);
+    }
   });
-
-  if (saveItems(items)) {
-    form.reset();
-    $("compareShipping").value = "0";
-    showStatus(alertMessage);
-  }
-});
-
-  const clear = $("clearCompare");
 
   if (clear) {
     clear.addEventListener("click", () => {
       if (
         readItems().length &&
-        window.confirm("Deseja apagar todos os preços registrados e o histórico?")
+        window.confirm(
+          "Deseja apagar todos os preços registrados e o histórico?"
+        )
       ) {
         if (saveItems([])) {
           showStatus("Comparação e histórico limpos.");
@@ -474,3 +546,8 @@
   render();
   showStatus("Comparador pronto para registrar preços, histórico e gráficos.");
 })();
+'''
+
+path = Path("/mnt/data/compare.js")
+path.write_text(code, encoding="utf-8")
+print(f"Arquivo criado: {path} ({len(code.splitlines())} linhas)")
