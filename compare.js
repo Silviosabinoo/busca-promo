@@ -1,33 +1,4 @@
 
-(() => {
-  "use strict";
-
-  const $ = (id) => document.getElementById(id);
-  const form = $("compareForm");
-  const tbody = $("compareRows");
-  const summary = $("compareSummary");
-  const status = $("compareStatus");
-  const KEY = "buscapromo_compare_v211";
-
-  if (!form || !tbody || !summary) return;
-
-  let history = $("compareHistory");
-
-  if (!history) {
-    history = document.createElement("section");
-    history.id = "compareHistory";
-    history.className = "compare-history";
-    summary.insertAdjacentElement("afterend", history);
-  }
-
-  let chartArea = $("comparePriceChart");
-
-  if (!chartArea) {
-    chartArea = document.createElement("section");
-    chartArea.id = "comparePriceChart";
-    chartArea.className = "compare-price-chart";
-    history.insertAdjacentElement("afterend", chartArea);
-  }
 
   function readItems() {
     try {
@@ -422,41 +393,68 @@
   }
 
   form.addEventListener("submit", event => {
-    event.preventDefault();
+    
+  event.preventDefault();
 
-    const product = $("compareProduct").value.trim();
-    const store = $("compareStore").value.trim();
-    const price = Number($("comparePrice").value);
-    const shipping = Number($("compareShipping").value);
+  const product = $("compareProduct").value.trim();
+  const store = $("compareStore").value.trim();
+  const price = Number($("comparePrice").value);
+  const shipping = Number($("compareShipping").value);
 
-    if (
-      !product ||
-      !store ||
-      !Number.isFinite(price) ||
-      price <= 0 ||
-      !Number.isFinite(shipping) ||
-      shipping < 0
-    ) {
-      showStatus("Preencha produto, loja, preço maior que zero e frete válido.", true);
-      return;
+  if (
+    !product ||
+    !store ||
+    !Number.isFinite(price) ||
+    price <= 0 ||
+    !Number.isFinite(shipping) ||
+    shipping < 0
+  ) {
+    showStatus("Preencha produto, loja, preço maior que zero e frete válido.", true);
+    return;
+  }
+
+  const items = readItems();
+  const productKey = product.trim().toLocaleLowerCase("pt-BR");
+
+  const previous = items.filter(item =>
+    String(item.product || "").trim().toLocaleLowerCase("pt-BR") === productKey
+  ).at(-1);
+
+  const newTotal = price + shipping;
+  let alertMessage = "Preço adicionado e salvo no histórico!";
+
+  if (previous) {
+    const previousTotal =
+      Number(previous.price) + Number(previous.shipping || 0);
+
+    if (newTotal < previousTotal) {
+      const savings = previousTotal - newTotal;
+
+      alertMessage =
+        `Queda de preço! ${product} ficou ${money(savings)} mais barato. ` +
+        `Antes: ${money(previousTotal)}. Agora: ${money(newTotal)}.`;
+    } else if (newTotal > previousTotal) {
+      alertMessage =
+        `Atenção: o preço de ${product} aumentou ${money(newTotal - previousTotal)}.`;
+    } else {
+      alertMessage = `O preço de ${product} permaneceu igual.`;
     }
+  }
 
-    const items = readItems();
-
-    items.push({
-      product,
-      store,
-      price,
-      shipping,
-      recordedAt: new Date().toISOString()
-    });
-
-    if (saveItems(items)) {
-      form.reset();
-      $("compareShipping").value = "0";
-      showStatus("Preço adicionado e salvo no histórico!");
-    }
+  items.push({
+    product,
+    store,
+    price,
+    shipping,
+    recordedAt: new Date().toISOString()
   });
+
+  if (saveItems(items)) {
+    form.reset();
+    $("compareShipping").value = "0";
+    showStatus(alertMessage);
+  }
+});
 
   const clear = $("clearCompare");
 
